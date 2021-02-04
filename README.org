@@ -1,0 +1,11 @@
+#+title: suspend-when-low-battery
+#+author: Xianwen Chen
+
+suspend-when-low-battery is a shell script that calls zzz when battery level is low.
+
+The script is written for Void Linux.
+
+The source code is written in the literate programming style.
+See [[file:DOCUMENTATION/suspend-when-low-battery-design.org]].
+
+suspend-when-low-battery is licensed under GPL version 2.
