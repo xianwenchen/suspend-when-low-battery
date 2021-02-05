@@ -1,0 +1,104 @@
+#+title: The Design of swlb
+#+author: Xianwen Chen
+
+* Introduction
+
+swlb is a shell script that calls zzz when battery level is low.
+swlb means suspend when low battery.
+
+The script is written for Void Linux.
+
+The shell script was based on [[https://old.reddit.com/r/voidlinux/comments/l03w0c/automatic_zzz_when_battery_is_lower_than_a/gjtung5/][u/GNU-Toxic]]'s shell script that answered [[https://old.reddit.com/r/voidlinux/comments/l03w0c/automatic_zzz_when_battery_is_lower_than_a/][my question]].
+
+The idea of running the shell script as a service was suggested by [[https://old.reddit.com/r/voidlinux/comments/l03w0c/automatic_zzz_when_battery_is_lower_than_a/gjrq4ln/][u/ahesford]] when he or she answered the same question.
+
+* The swlb Script
+
+swlb starts with a shebang.
+
+#+name: swlb-shebang
+#+begin_src sh :exports codes :eval no
+#!/bin/sh
+#+end_src
+
+Define the critical battery level as 15%.
+lbl means low battery level.
+
+Define the check interval to be 60 seconds.
+ci means check interval.
+
+#+name: swlb-var
+#+begin_src sh :exports codes :eval no
+lbl=15
+ci=60
+#+end_src
+
+Check charging status.
+If the battery is being discharged, check battery level.
+If battery level is lower than $lbl, tell dmesg and suspend the computer.
+
+When waking up, tell dmesg too.
+
+#+name: swlb-loop
+#+begin_src sh :exports codes :eval no
+while true
+do
+    status=$(cat /sys/class/power_supply/BAT0/status)
+    if [ $status = Discharging ]; then
+        capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+        if [ $capacity -le $lbl ]; then
+	    echo "$(date): Battery level is $capacity%. Going to suspend." > /dev/kmsg
+            zzz
+	    echo "$(date): Waking up." > /dev/kmsg
+        fi
+    fi
+    sleep $ci
+done
+#+end_src
+
+Put every piece together.
+Tangle it to ../swlb.
+
+#+name: swlb
+#+begin_src sh :tangle ../swlb :exports codes :eval no :noweb yes
+<<swlb-shebang>>
+
+<<swlb-var>>
+
+<<swlb-loop>>
+#+end_src
+
+../swlb needs to be executable.
+The code below is executed, when this org document is exported, which sets ../swlb to be executable.
+
+#+BEGIN_SRC sh :exports both
+chmod +x ../swlb
+#+END_SRC
+
+* Service Script
+
+** runit
+
+I create a run file for the runit, which is used by Void Linux.
+
+The content of the run.
+
+#+name: swlb-run
+#+begin_src sh :tangle ../init/runit/swlb/run :exports codes :eval no :noweb yes
+#!/bin/sh
+exec swlb
+#+end_src
+
+#+BEGIN_SRC sh :exports both
+chmod +x ../init/runit/swlb/run
+#+END_SRC
+
+* Potential Extension
+
+If the script gets used by more people, the settings of critical battery level and check interval can be defined /etc/swlb.conf.
+Right now I am the only user of this script.
+I keep the settings in the script.
+
+A service for systemd and/or other init systems can be written too, not only for Linux but other UNIX-like systems such as OpenBSD.
+
+The command, zzz, can be replaced by commands for other systems, such as "system suspend" or "loginctl suspend" for Linux and "apm -z" for OpenBSD.
