@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-05 Fri 01:21 -->
+<!-- 2021-02-05 Fri 01:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The Design of swlb</title>
@@ -247,20 +247,20 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3eedf31">1. Introduction</a></li>
-<li><a href="#org331942f">2. The swlb Script</a></li>
-<li><a href="#org551fd4e">3. Service Script</a>
+<li><a href="#orgdc9457e">1. Introduction</a></li>
+<li><a href="#orgf06c99e">2. The swlb Script</a></li>
+<li><a href="#org4d09406">3. Service Script</a>
 <ul>
-<li><a href="#orga4bd91f">3.1. runit</a></li>
+<li><a href="#org9f2b8f2">3.1. runit</a></li>
 </ul>
 </li>
-<li><a href="#orgcb4f7aa">4. Potential Extension</a></li>
+<li><a href="#org6587e28">4. Potential Extension</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3eedf31" class="outline-2">
-<h2 id="org3eedf31"><span class="section-number-2">1</span> Introduction</h2>
+<div id="outline-container-orgdc9457e" class="outline-2">
+<h2 id="orgdc9457e"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 swlb is a shell script that calls zzz when battery level is low.
@@ -281,15 +281,15 @@ The idea of running the shell script as a service was suggested by <a href="http
 </div>
 </div>
 
-<div id="outline-container-org331942f" class="outline-2">
-<h2 id="org331942f"><span class="section-number-2">2</span> The swlb Script</h2>
+<div id="outline-container-orgf06c99e" class="outline-2">
+<h2 id="orgf06c99e"><span class="section-number-2">2</span> The swlb Script</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 swlb starts with a shebang.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org342318b"><span style="color: #b22222;">#</span><span style="color: #b22222;">!/bin/</span><span style="color: #a020f0;">sh</span>
+<pre class="src src-sh" id="orgdbed69e"><span style="color: #b22222;">#</span><span style="color: #b22222;">!/bin/</span><span style="color: #a020f0;">sh</span>
 </pre>
 </div>
 
@@ -304,7 +304,7 @@ ci means check interval.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orgda64a77"><span style="color: #a0522d;">lbl</span>=15
+<pre class="src src-sh" id="org00014a8"><span style="color: #a0522d;">lbl</span>=15
 <span style="color: #a0522d;">ci</span>=60
 </pre>
 </div>
@@ -320,13 +320,13 @@ When waking up, tell dmesg too.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org1ae8c64"><span style="color: #a020f0;">while </span><span style="color: #483d8b;">true</span>
+<pre class="src src-sh" id="orga37db0d"><span style="color: #a020f0;">while </span><span style="color: #483d8b;">true</span>
 <span style="color: #a020f0;">do</span>
     <span style="color: #a0522d;">status</span>=$(cat /sys/class/power_supply/BAT0/status)
     <span style="color: #a020f0;">if</span> [ $<span style="color: #a0522d;">status</span> = Discharging ]; <span style="color: #a020f0;">then</span>
         <span style="color: #a0522d;">capacity</span>=$(cat /sys/class/power_supply/BAT0/capacity)
         <span style="color: #a020f0;">if</span> [ $<span style="color: #a0522d;">capacity</span> -le $<span style="color: #a0522d;">lbl</span> ]; <span style="color: #a020f0;">then</span>
-            <span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">"$(date): Battery level is $capacity%. Going to suspend."</span> &gt; /dev/kmsg
+            <span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">"$(date): Battery level is $capacity%. Suspending."</span> &gt; /dev/kmsg
             zzz
             <span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">"$(date): Waking up."</span> &gt; /dev/kmsg
         <span style="color: #a020f0;">fi</span>
@@ -342,7 +342,7 @@ Tangle it to ../swlb.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org6e9bdf4">&lt;&lt;swlb-shebang&gt;&gt;
+<pre class="src src-sh" id="org4625203">&lt;&lt;swlb-shebang&gt;&gt;
 
 &lt;&lt;swlb-var&gt;&gt;
 
@@ -362,12 +362,12 @@ The code below is executed, when this org document is exported, which sets ../sw
 </div>
 </div>
 
-<div id="outline-container-org551fd4e" class="outline-2">
-<h2 id="org551fd4e"><span class="section-number-2">3</span> Service Script</h2>
+<div id="outline-container-org4d09406" class="outline-2">
+<h2 id="org4d09406"><span class="section-number-2">3</span> Service Script</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orga4bd91f" class="outline-3">
-<h3 id="orga4bd91f"><span class="section-number-3">3.1</span> runit</h3>
+<div id="outline-container-org9f2b8f2" class="outline-3">
+<h3 id="org9f2b8f2"><span class="section-number-3">3.1</span> runit</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 I create a run file for the runit, which is used by Void Linux.
@@ -378,7 +378,7 @@ The content of the run.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org97d9c1f"><span style="color: #b22222;">#</span><span style="color: #b22222;">!/bin/</span><span style="color: #a020f0;">sh</span>
+<pre class="src src-sh" id="orgbd9d765"><span style="color: #b22222;">#</span><span style="color: #b22222;">!/bin/</span><span style="color: #a020f0;">sh</span>
 <span style="color: #a020f0;">exec</span> swlb
 </pre>
 </div>
@@ -391,8 +391,8 @@ The content of the run.
 </div>
 </div>
 
-<div id="outline-container-orgcb4f7aa" class="outline-2">
-<h2 id="orgcb4f7aa"><span class="section-number-2">4</span> Potential Extension</h2>
+<div id="outline-container-org6587e28" class="outline-2">
+<h2 id="org6587e28"><span class="section-number-2">4</span> Potential Extension</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 If the script gets used by more people, the settings of critical battery level and check interval can be defined /etc/swlb.conf.
@@ -412,7 +412,7 @@ The command, zzz, can be replaced by commands for other systems, such as "system
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Xianwen Chen</p>
-<p class="date">Created: 2021-02-05 Fri 01:21</p>
+<p class="date">Created: 2021-02-05 Fri 01:46</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

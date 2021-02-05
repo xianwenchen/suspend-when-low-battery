@@ -47,7 +47,7 @@ do
     if [ $status = Discharging ]; then
         capacity=$(cat /sys/class/power_supply/BAT0/capacity)
         if [ $capacity -le $lbl ]; then
-	    echo "$(date): Battery level is $capacity%. Going to suspend." > /dev/kmsg
+	    echo "$(date): Battery level is $capacity%. Suspending." > /dev/kmsg
             zzz
 	    echo "$(date): Waking up." > /dev/kmsg
         fi
