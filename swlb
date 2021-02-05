@@ -1,0 +1,18 @@
+#!/bin/sh
+
+lbl=15
+ci=60
+
+while true
+do
+    status=$(cat /sys/class/power_supply/BAT0/status)
+    if [ $status = Discharging ]; then
+        capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+        if [ $capacity -le $lbl ]; then
+	    echo "$(date): Battery level is $capacity%. Going to suspend." > /dev/kmsg
+            zzz
+	    echo "$(date): Waking up." > /dev/kmsg
+        fi
+    fi
+    sleep $ci
+done
