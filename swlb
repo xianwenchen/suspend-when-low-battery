@@ -1,6 +1,6 @@
 #!/bin/sh
 
-lbl=15
+lbl=20
 ci=60
 
 while true

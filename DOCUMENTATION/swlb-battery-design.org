@@ -29,7 +29,7 @@ ci means check interval.
 
 #+name: swlb-var
 #+begin_src sh :exports codes :eval no
-lbl=15
+lbl=20
 ci=60
 #+end_src
 
