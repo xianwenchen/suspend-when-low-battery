@@ -9,4 +9,6 @@ The script is written for Void Linux.
 The source code is written in the literate programming style.
 See [[file:DOCUMENTATION/swlb-design.org]].
 
+The script can be adapted to other Linux distributions and to other UNIX-like systems.
+
 swlb is licensed under GPL version 2.
